@@ -1,0 +1,32 @@
+<?php
+/** @var \Ripen\Prophet21\Helper\WholesaleHelper $wholesaleHelper */
+$wholesaleHelper = $this->helper('Ripen\Prophet21\Helper\WholesaleHelper');
+
+/** @var \Ripen\Prophet21\Helper\MsiHelper $msiHelper */
+$msiHelper = $this->helper('Ripen\Prophet21\Helper\MsiHelper');
+?>
+<?php if ($msiHelper->shouldRefreshStockPostLoad() || $msiHelper->shouldShowStockPopup()):?>
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Ripen_Prophet21/js/ajax-customer-stock-availability": {
+                "shouldRefreshStockPostLoad": <?= /* @noEscape */ $msiHelper->shouldRefreshStockPostLoad() ? 1 : 0 ?>,
+                "shouldShowStockPopup": <?= /* @noEscape */ $msiHelper->shouldShowStockPopup() ? 1 : 0 ?>
+            }
+        }
+    }
+</script>
+<?php endif;?>
+
+<?php if ($wholesaleHelper->isLoggedInCustomerWholesale()):?>
+<!-- Prophet 21 Absolute Footer -->
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Ripen_Prophet21/js/ajax-customer-prices": {},
+            "Ripen_Prophet21/js/data/customer-code": {},
+            "Ripen_Prophet21/js/google-analytics": {}
+        }
+    }
+</script>
+<?php endif;?>

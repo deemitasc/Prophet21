@@ -1,0 +1,40 @@
+<?php
+/** @var \Ripen\Prophet21\Block\CatalogInventory\Availability $block */
+$sku = $block->getData('sku');
+$product = $block->getProduct($sku);
+
+/** @var \Ripen\Prophet21\Helper\WholesaleHelper $wholesaleHelper */
+$wholesaleHelper = $this->helper('Ripen\Prophet21\Helper\WholesaleHelper');
+
+/** @var \Ripen\Prophet21\Helper\MsiHelper $msiHelper */
+$msiHelper = $this->helper('Ripen\Prophet21\Helper\MsiHelper');
+
+/** @var \Ripen\Prophet21\Helper\Product $productHelper */
+$productHelper = $this->helper('Ripen\Prophet21\Helper\Product');
+
+$customerDefaultSourceCode = $msiHelper->getCustomerDefaultSourceCode();
+$msiSources = $msiHelper->getSourceItems($product->getSku());
+$sortedMsiSources = $msiHelper->sortInventorySources($msiSources);
+$stockQuantity = $msiHelper->getStockQuantity($product->getSku(), $block->getData('isCategoryPage'));
+?>
+<div class="inventory-source">
+    <div>
+        <?php
+        foreach ($sortedMsiSources as $sourceItem):
+            $availableQty = $productHelper->getCappedStockDisplay($stockQuantity['net'][$sourceItem->getSourceCode()] ?? 0);
+            $dueIn = $productHelper->getCappedStockDisplay($stockQuantity['due'][$sourceItem->getSourceCode()] ?? 0);
+            if ($availableQty > 0):
+                ?>
+                <div class="<?=  $sourceItem->getSourceCode() == $customerDefaultSourceCode ? 'default-location' : ''?>">
+                    <?= $availableQty; ?>
+                    Available In <?= $msiHelper->getSourceName($sourceItem->getSourceCode()) ?>
+                    <?php if (intval($dueIn) > 0): ?>
+                        (Due In: <?= $dueIn ?>)
+                    <?php endif; ?>
+                </div>
+                <?php
+            endif;
+        endforeach;
+        ?>
+    </div>
+</div>

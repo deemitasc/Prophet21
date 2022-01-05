@@ -1,0 +1,6 @@
+<?php
+/** @var $block \Ripen\Prophet21\Block\Order\SuccessMessage */
+?>
+<div>
+    <?= $block->escapeHtml(__('Please note the order confirmation may take %1 minutes to arrive.', $block->getEmailDelayTimer())) ?>
+</div>

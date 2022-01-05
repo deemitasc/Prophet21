@@ -1,0 +1,62 @@
+<?php
+
+/** @var \Ripen\Prophet21\Block\Customer\Account\Dashboard\P21CustomerId $block */
+
+$p21CustomerIds = $block->getP21CustomerIds();
+$activeP21CustomerId = $block->getActiveP21CustomerId();
+$activeP21CustomerName = $block->getActiveP21CustomerName();
+
+if (! empty($activeP21CustomerId)):
+?>
+<div class="block block-dashboard-customer-code">
+    <div class="block-title">
+        <strong><?= $block->escapeHtml(__('Company Account')) ?></strong>
+    </div>
+    <div class="block-content">
+        <div class="box">
+            <div class="box-content">
+                <p>
+                    <strong><?= $block->escapeHtml(__('Account ID')) ?>:</strong>
+                    <?= $block->escapeHtml($activeP21CustomerId) ?>
+                </p>
+                <?php if ($activeP21CustomerName): ?>
+                <p>
+                    <strong><?= $block->escapeHtml(__('Account Name')) ?>:</strong>
+                    <?= $block->escapeHtml($activeP21CustomerName) ?>
+                </p>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php if (count($p21CustomerIds) > 1): ?>
+        <div class="box">
+            <form class="form-customer-code-edit"
+                  action="<?= $block->escapeUrl($block->getSaveUrl()) ?>"
+                  method="post"
+                  id="form-validate"
+                  data-hasrequired="<?= $block->escapeHtmlAttr(__('* Required Fields')) ?>">
+                <?= $block->getBlockHtml('formkey') ?>
+                <strong class="box-title">
+                    <span><?= $block->escapeHtml(__('Available Accounts')) ?></span>
+                </strong>
+                <div class="box-content">
+                    <div class="control radio-list">
+                        <select name="<?= $block::FORM_FIELD_SELECTED_P21_CUSTOMER_ID ?>">
+                            <?php foreach ($p21CustomerIds as $p21CustomerId): ?>
+                                <option value="<?= $block->escapeHtmlAttr($p21CustomerId) ?>" <?= ($activeP21CustomerId == $p21CustomerId) ? ' selected' : ''?>>
+                                    <?= $block->escapeHtml($p21CustomerId) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="box-actions">
+                    <button class="action save primary" type="submit">
+                        <span><?= $block->escapeHtml(__('Switch Account')) ?></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <?php endif; ?>
+    </div>
+</div>
+<?php endif; ?>

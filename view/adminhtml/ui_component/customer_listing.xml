@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <columns name="customer_columns">
+        <column name="erp_customer_id" sortOrder="25">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">P21 Customer Code</label>
+            </settings>
+        </column>
+        <column name="erp_alternate_customer_ids" sortOrder="26">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">P21 Alternate Customer Codes</label>
+            </settings>
+        </column>
+    </columns>
+</listing>

@@ -1,0 +1,225 @@
+<?php
+/**
+ * @category Mageants FastOrder
+ * @package Mageants_FastOrder
+ * @copyright Copyright (c) 2018 Mageants
+ * @author Mageants Team <support@mageants.com>
+ */
+?>
+
+<?php
+
+$om = \Magento\Framework\App\ObjectManager::getInstance();
+$FormatInterface = $om->get("\Magento\Framework\Locale\FormatInterface");
+$currenceformat = $FormatInterface->getPriceFormat();
+$currenceSymbol = $currenceformat['pattern'];
+
+if ($this->getNoOfLines() != 0 && $this->getNoOfLines() != NULL) {
+    $noOfLines = $this->getNoOfLines();
+} else {
+    $noOfLines = 1;
+}
+?>
+<div class="fastorder-page-title">
+    <h1><?php echo __('Fast Order') ?></h1>
+    <h4>Bulk discounts will not be visible until added to cart.</h4>
+</div>
+<form class="form mgantsfastorder-form"
+      action="<?php echo $this->getUrl('fastorder/index/add', array('_secure' => true)) ?>" id="mgantsfastorder-form"
+      method="post" data-hasrequired="* Required Fields" novalidate="novalidate">
+    <div class="table-responsive table-wrapper">
+        <table class="mgantsfastorder-multiple-form table data">
+            <thead>
+            <tr class="mgantsfastorder-row" style="background-color: #f0f0f0;">
+                <th class="mgantsfastorder-row-ref">
+                    <span><?php echo __('Search') ?></span>
+                </th>
+                <th class="mgantsfastorder-row-image">
+                    <span><?php echo __('Photo') ?></span>
+                </th>
+                <th class="mgantsfastorder-row-name">
+                    <span><?php echo __('Product') ?></span>
+                </th>
+                <th class="mgantsfastorder-row-qty">
+                    <span><?php echo __('Qty') ?></span>
+                </th>
+                <th class="mgantsfastorder-row-price">
+                    <span><?php echo __('Subtotal') ?></span>
+                </th>
+                <th class="mgantsfastorder-row-edit">
+                    <span><?php echo __('Edit') ?></span>
+                </th>
+                <th class="mgantsfastorder-row-add">
+                    <span><?php echo __('Action') ?></span>
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <?php for ($i = 0; $i < $noOfLines; $i++) : ?>
+                <tr class="mgantsfastorder-row mgantsrow" data-sort-order="<?php echo $i; ?>"
+                    id="mgantsfastorder-<?php echo $i; ?>">
+                    <td class="mgantsfastorder-row-ref" data-th="Search">
+                        <div class="mgantsheight-tr">
+                            <div class="input-box">
+                                <input type="text" placeholder="<?php echo __('Enter product name or SKU'); ?>"
+                                       class="input-text mgantssearch-input" value="" autocomplete="off">
+                                <button value="OK" class="button mgantsbtn-ok" title="OK" type="button">
+                                    <span><?php echo __('OK'); ?></span></button>
+                            </div>
+                            <div class="mgantsfastorder-autocomplete" style="display: none;">
+                            </div>
+                        </div>
+                    </td>
+                    <td class="mgantsfastorder-row-image mgantsfastorder-img" data-th="Photo">&nbsp;</td>
+                    <td class="mgantsfastorder-row-name" data-th="Product">
+                        <div class="mgantsproduct-name-select"></div>
+                        <div class="mgantsproduct-option-select">
+                            <ul></ul>
+                        </div>
+                        <div class="mgantsproduct-custom-option-select">
+                            <ul></ul>
+                        </div>
+                        <div class="mgantsproduct-baseprice">
+                            <ul></ul>
+                        </div>
+                    </td>
+                    <td class="mgantsfastorder-row-qty" data-th="Qty">
+                        <input type="number" min="0" maxlength="12" class="input-text qty"
+                               title="<?php echo __('Qty'); ?>" size="4" value="1" name="qtys[]"
+                               data-validate="{&quot;required-number&quot;:true,&quot;validate-item-quantity&quot;:{&quot;minAllowed&quot;:1}}"
+                               readonly="">
+                        <input type="hidden" class="mgantsproduct-price-number" value="">
+                        <input type="hidden" class="mgantsproduct-price-custom-option" value="0">
+                        <input type="hidden" class="mgantsproduct-id-calc" value="">
+                        <input type="hidden" class="mgantsproduct-price-number-download" value="0"/>
+                        <div class="mgantsproduct-qty-increment"></div>
+                    </td>
+                    <td class="mgantsfastorder-row-price" data-th="Subtotal Price">
+                        <span class="price"></span>
+                    </td>
+                    <td class="mgantsfastorder-row-edit" data-th="Edit">
+                        <button value="<?php echo __('Edit'); ?>" class="button disabled"
+                                title="<?php echo __('Edit'); ?>" type="button"><span><?php echo __('Reset'); ?></span>
+                        </button>
+                    </td>
+                    <td class="mgantsfastorder-row-action" data-th="Action">
+                        <button value="<?php echo __('OK'); ?>" class="button btn-ok disabled"
+                                title="<?php echo __('OK'); ?>" type="button">
+                            <span><span><?php echo __('Delete'); ?></span></span></button>
+                    </td>
+                    <td class="mgantsaddtocart-info mgantsfastorder-hidden">
+                        <input type="hidden" class="mgantsproduct-id" value="" name="productIds[]">
+                        <div class="mgantsfastorder-hidden mgantsaddtocart-option"></div>
+                        <div class="mgantsfastorder-hidden mgantsaddtocart-custom-option"></div>
+                    </td>
+                </tr>
+            <?php endfor; ?>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <div class="mgantsfile-upload btn action primary">
+                        <span><?php echo __('Upload') ?></span>
+                        <input type="file" class="mgantsupload" name="mgantsupload">
+                    </div>
+                    <a href="<?php echo $block->getCsvUrl() ?>" class="mgantssample-csv"
+                       download=""><?php echo __('Download Sample Csv') ?></a>
+                </td>
+                <td>
+                    <button class="mgantsaction-add mgantsaddline" type="button" title="<?php echo __('Add lines') ?>">
+							<span>
+								<span><?php echo __('Add lines') ?></span>
+							</span>
+                    </button>
+                </td>
+                <td>
+                    <button class="action primary tocart" type="submit">
+							<span>
+								<span><?php echo __('Add to cart') ?></span>
+							</span>
+                    </button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</form>
+<script type="text/x-magento-init">
+	{ "#mgantsfastorder-0": {
+		"mgants/fastorder": {
+			"row":"<?php echo $noOfLines ?>",
+			"maxRow":"<?php echo $this->getMaxRow() ?>",
+			"searchUrl":"<?php echo $this->getUrl('fastorder/index/search', array('_secure' => true)) ?>",
+			"headerTextColor":"FFFFFF",
+			"headerBackgroundColor":"2629BF",
+			"charMin":"1",
+			"fomatPrice":{"pattern":"<?php echo $currenceSymbol ?>","precision":2,"requiredPrecision":2,"decimalSymbol":".","groupSymbol":",","groupLength":3,"integerRequired":1},
+			"csvUrl":"<?php echo $this->getUrl('fastorder/index/csv/', array('_secure' => true)) ?>"
+			}
+		}
+	}
+
+</script>
+<script type="text/javascript">
+    require([
+        'jquery',
+        'mgants/option'
+    ], function ($) {
+        'use strict';
+        $(document).on("mousedown", "#mgantsfastorder-form .mgantsrow-suggest", function (e) {
+            var widget = $(this).option({});
+            var selectUrl = '<?php echo $this->getUrl('fastorder/index/option', array('_secure' => true)) ?>';
+            if ($(this).find('.mgantsshow-popup').val() == 1) {
+                widget.option('showPopup', selectUrl, this);
+            }
+            widget.option('selectProduct', this);
+        });
+    });
+</script>
+<script id="mgantsfastorder-search-complete" type="text/x-magento-template">
+    <ul>
+        <% if(data.length < 1){%>
+        <li>
+            <span>No Result</span>
+        </li>
+        <% }else{%>
+        <% _.each(data, function(item) { %>
+        <li>
+            <a href="javascript:void(0)" class="mgantsrow-suggest">
+                <div class="mgantsproduct-info">
+                    <div class="mgantsproduct-image">
+                        <img src="<%- item.product_thumbnail %>" alt="<%= item.product_sku %>"/>
+                    </div>
+                    <div class="mgantsproduct-name">
+                        <span class="product name"><%= item.product_name %></span>
+                    </div>
+
+                    <div class="mgantsproduct-sku">
+                        <strong class="type">SKU</strong>
+                        <% if(item.product_sku_highlight){%>
+                        <span class="mgantsref-part"><%= item.product_sku_highlight %></span>
+                        <% }else{%>
+                        <span class="mgantsref-part"><%= item.product_sku %></span>
+                        <% }%>
+                    </div>
+
+                    <div class="mgantsproduct-price">
+                        <span class="mgantsprice price"><%- item.product_price %></span>
+                    </div>
+                </div>
+                <input type="hidden" class="mgantsproduct-price-amount" value="<%- item.product_price_amount %>">
+                <input type="hidden" class="mgantsproduct-url" value="<%- item.product_url %>">
+                <input type="hidden" class="mgantsproduct-sku-select" value="<%= item.product_sku %>">
+                <input type="hidden" class="mgantsproduct-id" value="<%- item.product_id %>"/>
+                <input type="hidden" class="mgantsproduct-qty" value="<%- item.qty %>">
+                <input type="hidden" class="mgantsshow-popup" value="<%- item.popup %>">
+                <input type="hidden" class="mgantsproduct-type" value="<%- item.product_type %>">
+                <input type="hidden" class="mgantsproduct-validate" value="<%- item.data_validate %>">
+                <input type="hidden" class="mgantsproduct-qty-decimal" value="<%- item.is_qty_decimal %>">
+            </a>
+        </li>
+        <% }); %>
+        <% }%>
+    </ul>
+</script>

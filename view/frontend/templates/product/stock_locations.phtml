@@ -1,0 +1,71 @@
+<?php
+$product = $block->getData('product');
+if ($product instanceof \Magento\Catalog\Model\Product):
+
+    /** @var \Ripen\Prophet21\Helper\Product $_p21Helper */
+    $_p21Helper = $this->helper('Ripen\Prophet21\Helper\Product');
+
+    /** @var \Ripen\Prophet21\Helper\MsiHelper $msiHelper */
+    $msiHelper = $this->helper('Ripen\Prophet21\Helper\MsiHelper');
+
+    $stockQuantity = $msiHelper->getStockQuantity($product->getSku(), $block->getData('isCategoryPage'));
+    ?>
+    <div class="popup-modal-content" id="popup_modal_<?= $product->getId() ?>">
+        <div class="inventory-sources-wrapper">
+            <h1>Inventory Detail</h1>
+            <h2> Part No.: <?= $product->getSku() ?></h2>
+            <table class="inventory-sources">
+                <tr>
+                    <th class="location">Location</th>
+                    <th>Avail</th>
+                    <th>Due In</th>
+                </tr>
+                <?php foreach ($msiHelper->getSourceItems($product->getSku()) as $sourceItem): ?>
+                    <tr>
+                        <td class="location"><?= $msiHelper->getSourceName($sourceItem->getSourceCode()) ?></td>
+                        <td><?php
+                            if(!empty($stockQuantity['net'])){
+                                echo $_p21Helper->getCappedStockDisplay($stockQuantity['net'][$sourceItem->getSourceCode()]);
+                            }
+                            ?></td>
+                        <td>
+                            <?php
+                            if(!empty($stockQuantity['due'])){
+                                echo $_p21Helper->getCappedStockDisplay($stockQuantity['due'][$sourceItem->getSourceCode()]);
+                            }
+                            ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+            <div class="source-inventory-note">
+                Additional inventory may be possible. Please call for details.
+            </div>
+        </div>
+    </div>
+    <script>
+        require([
+                'jquery',
+                'Magento_Ui/js/modal/modal'
+            ], function($, modal) {
+                let buttons = [];
+
+                let options = {
+                    type: 'popup',
+                    responsive: true,
+                    innerScroll: true,
+                    buttons: buttons
+                };
+
+                modal(options, $('#popup_modal_<?= $product->getId() ?>'));
+
+                $(document).on('click', 'a.product-item-link.stock', function(e){
+                    let link = $(e.target.parentNode).attr('id');
+                    let pieces = link.split(/[\s_]+/);
+                    let id = pieces[pieces.length-1];
+
+                    $('#popup_modal_'+ id).modal('openModal');
+                });
+            }
+        );
+    </script>
+<?php endif;?>

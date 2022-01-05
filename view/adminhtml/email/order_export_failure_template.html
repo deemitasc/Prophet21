@@ -1,0 +1,18 @@
+<!--@subject Order Transfer to P21 Potential Failure@-->
+<!--@vars {
+"var content":"Formatted Order Table"
+"var window":"Alert Time Window (in Minutes)"
+"var threshold":"Alert Time Threshold (in Minutes)"
+} @-->
+
+<p>The following orders seem not to have imported to P21 within {{var threshold}} minutes. Possible causes:</p>
+
+<ul>
+    <li>An error/delay transferring the order from Magento to the middleware</li>
+    <li>An error/delay transferring the order from the middleware to P21</li>
+    <li>An error/delay retrieving the P21 import status and order number from the middleware</li>
+</ul>
+
+<p>This report covers orders placed in the last {{var window}} minutes.</p>
+
+{{var orderTable|raw}}

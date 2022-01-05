@@ -1,0 +1,40 @@
+<?php
+
+// @codingStandardsIgnoreFile
+
+?>
+<?php
+    /** @var \Ripen\Prophet21\Block\SalesRep\Customer $block */
+    $customers = $block->getSalesRepAssignedCustomers();
+?>
+
+<?php if (! empty($customers)): ?>
+<div class="block-dashboard-info">
+    <div class="table-wrapper">
+        <table class="data table">
+            <thead>
+            <tr>
+                <th scope="col" class="col id"><?php /* @escapeNotVerified */ echo __('Customer Code') ?></th>
+                <th scope="col" class="col date"><?php /* @escapeNotVerified */ echo __('Company') ?></th>
+                <th scope="col" class="col po-number"><?php /* @escapeNotVerified */ echo __('Address') ?></th>
+                <th scope="col" class="col shipping"><?php /* @escapeNotVerified */ echo __('State/Region') ?></th>
+                <th scope="col" class="col total"><?php /* @escapeNotVerified */ echo __('Zip/Postal Code') ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($customers as $customer): ?>
+                <tr>
+                    <td data-th="<?php echo $block->escapeHtml(__('Customer Code')) ?>" class="col id"><?php /* @escapeNotVerified */ echo $customer['customerCode'] ?></td>
+                    <td data-th="<?php echo $block->escapeHtml(__('Company')) ?>" class="col"><?php /* @escapeNotVerified */ echo $customer['company']; ?></td>
+                    <td data-th="<?php echo $block->escapeHtml(__('Address')) ?>" class="col"><?php echo $customer['street'] . (! empty ($customer['suffix']) ? '<br/>'.$customer['suffix'] : ''); ?></td>
+                    <td data-th="<?php echo $block->escapeHtml(__('State/Region')) ?>" class="col"><?php echo $customer['region'] ?></td>
+                    <td data-th="<?php echo $block->escapeHtml(__('Zip/Postal Code')) ?>" class="col"><?php /* @escapeNotVerified */ echo $customer['postCode']; ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+<?php else: ?>
+    <div class="message info empty"><span><?php /* @escapeNotVerified */ echo __('No assigned customers found.'); ?></span></div>
+<?php endif ?>
+</div>
