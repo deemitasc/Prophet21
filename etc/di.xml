@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\InventorySales\Plugin\StockState\CheckQuoteItemQtyPlugin"
+                type="Ripen\Prophet21\Plugin\CheckQuoteItemQtyPlugin"/>
+    <preference for="Ripen\Prophet21\Api\ProductsInterface" type="Ripen\Prophet21\Model\Products"/>
+    <preference for="Ripen\Prophet21\Api\ImagesInterface" type="Ripen\Prophet21\Model\Images"/>
+    <preference for="Ripen\Prophet21\Api\CustomerPricesInterface" type="Ripen\Prophet21\Model\Products"/>
+    <preference for="Magento\CatalogImportExport\Model\Import\Product\Validator\Media"
+                type="Ripen\Prophet21\Model\Import\Product\Validator\Media"/>
+    <preference for="Magento\Sales\Block\Order\History" type="Ripen\Prophet21\Block\Order\History"/>
+    <preference for="Magento\InventoryReservations\Model\AppendReservations"
+                type="Ripen\Prophet21\Model\AppendReservations"/>
+    <preference for="Magento\InventorySourceDeductionApi\Model\SourceDeductionService"
+                type="Ripen\Prophet21\Model\SourceDeductionService"/>
+    <preference for="Magento\Catalog\Pricing\Render\FinalPriceBox" type="Ripen\Prophet21\Block\Pricing\FinalPriceBox"/>
+    <preference for="Magento\Catalog\Pricing\Render" type="Ripen\Prophet21\Block\Pricing\Render"/>
+
+    <type name="Ripen\Prophet21\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">prophet21</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="email" xsi:type="object">Ripen\Prophet21\Logger\EmailHandler</item>
+                <item name="file" xsi:type="object">Ripen\Prophet21\Logger\FileHandler</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Ripen\Prophet21\Logger\FileHandler" type="Magento\Framework\Logger\Handler\Base">
+        <arguments>
+            <argument name="fileName" xsi:type="string">var/log/prophet21.log</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Firebear\ImportExport\Model\Import">
+        <plugin name="update_modified_date" type="Ripen\Prophet21\Plugin\UpdateModifiedDate" sortOrder="1"
+                disabled="false"/>
+    </type>
+    <type name="Magento\Customer\Model\Customer">
+        <plugin name="checkout_additional_addresses" type="Ripen\Prophet21\Plugin\GetAdditionalCustomerAddresses"
+                sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Magento\Quote\Api\CartManagementInterface">
+        <plugin name="set_prophet_21_prices" type="Ripen\Prophet21\Plugin\SetCustomItemPricesOnOrderCreation" sortOrder="100"/>
+    </type>
+    <type name="Magento\Quote\Model\Quote\Address\CustomAttributeListInterface">
+        <plugin name="add_prophet_21_id" type="Ripen\Prophet21\Plugin\AddAddressIdQuoteAddress"/>
+    </type>
+    <type name="Magento\Quote\Model\Quote\Item\ToOrderItem">
+        <plugin name="ripen_to_order_item" type="Ripen\Prophet21\Plugin\ToOrderItem" sortOrder="1"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\Address">
+        <plugin name="save_prophet_21_id" type="Ripen\Prophet21\Plugin\SaveAddressIdOrderAddress"/>
+    </type>
+    <type name="Mageants\FastOrder\Controller\Index\Search">
+        <plugin name="set_prophet_21_prices" type="Ripen\Prophet21\Plugin\UpdateFastOrderPrice"/>
+    </type>
+    <type name="Magento\Tax\Model\Sales\Total\Quote\Tax">
+        <plugin name="tax_override" type="Ripen\Prophet21\Plugin\ApplyCustomerTaxable"/>
+    </type>
+    <type name="Magento\Quote\Model\Quote\Address">
+        <plugin name="ripen_quote_minimum_amount_bypass" type="Ripen\Prophet21\Plugin\MinimumOrderAmountBypass"/>
+    </type>
+    <type name="Magento\SalesSequence\Model\Sequence">
+        <plugin name="set_prophet_order_number" type="Ripen\Prophet21\Plugin\SetOrderNumber"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\Email\Sender\OrderSender">
+        <plugin name="order_sender_delay" type="Ripen\Prophet21\Plugin\OrderSenderDelay"/>
+    </type>
+    <type name="Magento\Checkout\Model\PaymentInformationManagement">
+        <plugin name="force_p21_billing_address_for_payment_method" type="Ripen\Prophet21\Plugin\ForceBillingAddressForPaymentMethod"/>
+    </type>
+    <type name="Magento\Framework\App\Http\Context">
+        <plugin name="wholesale_context_check" type="Ripen\Prophet21\Plugin\WholesaleCustomerContextPlugin"/>
+    </type>
+
+    <type name="Greenwing\Technology\Model\CategoryLinkManagement">
+        <plugin name="set_p21_customer_id" type="Ripen\Prophet21\Plugin\Greenwing\SetCustomerP21IdOnCustomer"/>
+    </type>
+    <type name="Greenwing\Technology\Block\Custom">
+        <plugin name="set_p21_properties" type="Ripen\Prophet21\Plugin\Greenwing\SetCartItemProperties"/>
+    </type>
+</config>

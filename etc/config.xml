@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <p21>
+            <feeds>
+                <order_export_cron_schedule>*/15 * * * *</order_export_cron_schedule>
+                <order_import_cron_schedule>0 21 * * *</order_import_cron_schedule>
+                <order_sync_all_cron_schedule>0 2 * * *</order_sync_all_cron_schedule>
+                <order_sync_recent_cron_schedule>*/15 * * * *</order_sync_recent_cron_schedule>
+                <order_sync_recent_time_window>30</order_sync_recent_time_window>
+                <inventory_file_cron_schedule>*/15 * * * *</inventory_file_cron_schedule>
+                <use_credit_card_codes_for_payment_type>0</use_credit_card_codes_for_payment_type>
+                <default_shipping_method_code>flatrate_flatrate</default_shipping_method_code>
+                <auto_approve_orders_for_guests>0</auto_approve_orders_for_guests>
+            </feeds>
+            <integration>
+                <use_library_pricing_for_retail_customer>0</use_library_pricing_for_retail_customer>
+                <default_price_field>price1</default_price_field>
+                <allow_inventory_source_selection>1</allow_inventory_source_selection>
+                <inventory_display_limit>25</inventory_display_limit>
+                <allow_import_for_products_without_price>0</allow_import_for_products_without_price>
+                <email_delay_timer>30</email_delay_timer>
+                <email_sync_timeout>120</email_sync_timeout>
+                <enable_p21_contact_lookup>1</enable_p21_contact_lookup>
+                <stock_post_load>wholesale</stock_post_load>
+                <stock_popup>wholesale</stock_popup>
+                <enable_new_product_import>1</enable_new_product_import>
+            </integration>
+            <email_alerts>
+                <threshold>ERROR</threshold>
+                <order_export_check>
+                    <cron_schedule>20 */2 * * *</cron_schedule>
+                    <threshold>30</threshold>
+                    <window>240</window>
+                </order_export_check>
+            </email_alerts>
+        </p21>
+    </default>
+</config>

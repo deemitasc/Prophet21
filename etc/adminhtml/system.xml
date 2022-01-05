@@ -1,0 +1,386 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="p21" translate="label" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
+            <class>separator-top</class>
+            <label>P21 Integration</label>
+            <tab>service</tab>
+            <resource>Ripen_Prophet21::config</resource>
+            <group id="feeds" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Import/Export Settings</label>
+                <field id="enable_order_import_cron" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Order Import</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="order_import_cron_schedule" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Order Import Schedule</label>
+                    <validate>required-entry</validate>
+                    <comment>Cron schedule to import new orders from P21</comment>
+                </field>
+                <field id="order_sync_all_cron_schedule" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>All Orders Sync Schedule </label>
+                    <validate>required-entry</validate>
+                    <comment>Cron schedule to sync all not completed orders from P21</comment>
+                </field>
+                <field id="order_sync_recent_cron_schedule" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Recent Orders Sync Schedule </label>
+                    <validate>required-entry</validate>
+                    <comment>Cron schedule to sync only most recent orders from P21 (checks Recent Orders Sync Time Window value)</comment>
+                </field>
+                <field id="order_sync_recent_time_window" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Recent Orders Sync Time Window (Days)</label>
+                    <validate>required-entry</validate>
+                    <comment>Sync orders placed in the last N days</comment>
+                </field>
+                <field id="enable_order_export_cron" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Order Export</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="order_export_cron_schedule" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Order Export Schedule</label>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="inventory_file_cron_schedule" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Inventory File Schedule</label>
+                    <comment>
+                        Generates the file that is then picked up by a Firebear Import job (separately configured under System > Import Jobs).
+                        This job should be configured to run at least as frequently as import job.
+                    </comment>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="products_data_file_cron_schedule" translate="label" type="text" sortOrder="61" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Product Data File Schedule</label>
+                    <comment>
+                        Generates the file that is then picked up by a Firebear Import job (separately configured under System > Import Jobs).
+                        This job should be configured to run at least as frequently as import job.
+                    </comment>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="images_data_file_cron_schedule" translate="label" type="text" sortOrder="62" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Images Data File Schedule</label>
+                    <comment>
+                        Generates the file that is then picked up by a Firebear Import job (separately configured under System > Import Jobs).
+                        This job should be configured to run at least as frequently as import job.
+                    </comment>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="sanitize_deleted_products_cron_schedule" translate="label" type="text" sortOrder="65" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Sanitize Deleted Products Schedule</label>
+                    <comment>
+                       Checks hard/soft deleted products in P21 and updates status in Magento.
+                    </comment>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="firebear_import_products_job_id" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Firebear Import Products Job ID</label>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="firebear_import_images_job_id" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Firebear Import Images Job ID</label>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="import_directory" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Path to Import Directory</label>
+                    <comment>Directory in which to generate data files for import (absolute path)</comment>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="images_import_directory" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Path to Images Import Directory</label>
+                    <comment>Directory with product images (relative to pub/media/)</comment>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="use_credit_card_codes_for_payment_type" translate="label" type="select" sortOrder="101" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Order Export: Use Credit Cards Codes for CC Payment Type</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If set to Yes, payment_type field passed to P21 will have a value of a specific credit card type on order</comment>
+                </field>
+                <field id="payment_types_mapping" translate="label" type="textarea" sortOrder="102" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Payment Type Mapping</label>
+                    <comment><![CDATA[
+                        JSON object mapping credit card types to P21 payment type IDs<br>
+                        Example: <code>{"VI":"10","MC":"16","AE":"18","DI":"19"}</code>
+                    ]]></comment>
+                    <validate>required-entry</validate>
+                </field>
+            </group>
+            <group id="integration" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Integration Properties</label>
+                <field id="default_inventory_source_id" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Default Shipping Warehouse</label>
+                    <source_model>Ripen\Prophet21\Model\Entity\Attribute\Source\ShippingWarehouse</source_model>
+                    <config_path>p21/feeds/default_inventory_source_id</config_path>
+                </field>
+                <field id="allow_inventory_source_selection" translate="label" type="select" sortOrder="112" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Allow Customer to Select Warehouse</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="use_api_for_stock_status_on_category_pages" translate="label" type="select" sortOrder="113" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Use API on Category Pages</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If set to Yes, stock status will be retrieved from P21 using API. If set to No, the latest synced stock status in Magento will used.</comment>
+                </field>
+                <field id="stock_post_load" translate="label" type="select" sortOrder="115" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Refresh Stock Status after Page Load</label>
+                    <source_model>Ripen\Prophet21\Model\Config\StockLocationsModes</source_model>
+                </field>
+                <field id="stock_popup" translate="label" type="select" sortOrder="117" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Inventory Detail Popup</label>
+                    <comment>Display stock locations popup when clicking stock status</comment>
+                    <source_model>Ripen\Prophet21\Model\Config\StockLocationsModes</source_model>
+                </field>
+                <field id="shipping_methods_mapping" translate="label" type="textarea" sortOrder="120" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Shipping Method Mapping</label>
+                    <comment><![CDATA[
+                        JSON object mapping P21 carrier IDs to Magento shipping method codes (targets may be strings or arrays of strings)<br>
+                        Example: <code>{"100001": "ups_01", "100002": ["flatrate_flatrate", "freeshipping_freeshipping"]}</code>
+                    ]]></comment>
+                    <validate>required-entry</validate>
+                    <config_path>p21/feeds/shipping_methods_mapping</config_path>
+                </field>
+                <field id="default_shipping_method_code" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Default Import Shipping Method Code</label>
+                    <validate>required-entry</validate>
+                    <comment>If shipping method is not provided in P21 data, or it's not mapped correctly, this shipping method code will be used for imported orders.</comment>
+                    <config_path>p21/feeds/default_shipping_method_code</config_path>
+                </field>
+                <field id="store_ids_mapping" translate="label" type="textarea" sortOrder="123" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Store ID Mapping</label>
+                    <comment><![CDATA[
+                        JSON object mapping P21 Class 5 values to Magento store codes (targets may be strings or arrays of strings)
+                    ]]></comment>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="wholesale_discount_rule_sku" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Online Ordering Discount Rule SKU</label>
+                    <validate>required-entry</validate>
+                    <comment>SKU used to retrieve the Catalog Price Rule used to configure the discount for ordering online</comment>
+                    <config_path>p21/feeds/wholesale_discount_rule_sku</config_path>
+                </field>
+                <field id="retail_customer_id" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Retail Customer ID</label>
+                    <validate>required-entry</validate>
+                    <config_path>p21/feeds/retail_customer_id</config_path>
+                </field>
+                <field id="use_library_pricing_for_retail_customer" translate="label" type="select" sortOrder="145" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Use Library Prices for Retail</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If set to "Yes", libraryPrice will be used for the retail customer pricing instead of default listPrice</comment>
+                </field>
+                <field id="default_price_field" translate="label" type="select" sortOrder="145" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Default Price Field</label>
+                    <source_model>Ripen\Prophet21\Model\Config\PriceFields</source_model>
+                    <comment>If there is no Library or Contract price set, the price will be pulled from the field selected above</comment>
+                </field>
+                <!-- TODO: Rename retail_company_id to company_id, including migration of current config, as it is not retail-specific. -->
+                <field id="retail_company_id" translate="label" type="text" sortOrder="150" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Company ID</label>
+                    <validate>required-entry</validate>
+                    <config_path>p21/feeds/retail_company_id</config_path>
+                </field>
+                <field id="retail_store_code" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Retail Store Code</label>
+                    <validate>required-entry</validate>
+                    <config_path>p21/feeds/retail_store_code</config_path>
+                </field>
+                <field id="wholesale_store_code" translate="label" type="text" sortOrder="170" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Wholesale Store Code</label>
+                    <validate>required-entry</validate>
+                    <config_path>p21/feeds/wholesale_store_code</config_path>
+                    <comment>If a separate Wholesale Store is not present, set this value to the Retail Store Code.</comment>
+                </field>
+                <field id="retail_website_code" translate="label" type="text" sortOrder="180" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Retail Website Code</label>
+                    <validate>required-entry</validate>
+                    <config_path>p21/feeds/retail_website_code</config_path>
+                </field>
+                <field id="wholesale_website_code" translate="label" type="text" sortOrder="190" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Wholesale Website Code</label>
+                    <validate>required-entry</validate>
+                    <config_path>p21/feeds/wholesale_website_code</config_path>
+                    <comment>If a separate Wholesale Website is not present, set this value to the Retail Website Code.</comment>
+                </field>
+                <field id="sales_reps_user_group_code" translate="label" type="text" sortOrder="210" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Sales Reps Users Group Code</label>
+                    <validate>required-entry</validate>
+                    <config_path>p21/feeds/sales_reps_user_group_code</config_path>
+                </field>
+                <field id="inventory_display_limit" translate="label" type="text" sortOrder="230" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Inventory Display Limit</label>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="excluded_attribute_names" translate="label" type="text" sortOrder="230" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Attributes Always Excluded From Sync</label>
+                    <comment>Comma delimited list of P21 attributes to ignore during sync</comment>
+                </field>
+                <field id="enable_new_product_import" translate="label" type="select" sortOrder="230" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable New Product Import</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Setting this to No will only update existing products, skipping new product creation</comment>
+                </field>
+                <field id="uoms_to_allow_decimal_qty" translate="label" type="text" sortOrder="232" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Units of Measure to Allow Qty uses Decimals</label>
+                    <comment>Comma delimited list of non-countable product UOM, such as FT or LB, that should allow for such products' quantities to use decimals.</comment>
+                </field>
+                <field id="allow_import_for_products_without_price" translate="label" type="select" sortOrder="235" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Allow Import for Products With No Price</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="use_uploaded_files_image_names" translate="label" type="select" sortOrder="240" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Use Uploaded Files Image Names</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Selecting 'No' will pull image names from P21 and will try to find them on file server</comment>
+                </field>
+                <field id="use_p21_order_numbers" translate="label" type="select" sortOrder="250" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Use P21 Order Numbers in Magento</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>
+                        If set to Yes will set Magento order number (increment ID) to P21 order number once received. Order confirmation email
+                        will be delayed until this is received or max time configured below (requires Asynchronous Sending to be enabled under
+                        Sales Emails). Magento order numbers will be suffixed with "-PENDING" until P21 order number is received.
+                    </comment>
+                </field>
+                <field id="auto_approve_orders_for_guests" translate="label" type="select" sortOrder="254" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Send Guest Orders as Pre-Approved to P21</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="email_delay_timer" translate="label comment" type="text" sortOrder="255" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Confirmation Email Delay Message</label>
+                    <comment>
+                        Time (in minutes) to note as the potential order confirmation delay on success page. Should be set to maximum normal
+                        round trip sync time for an order to get to P21 and back to Magento with a P21 order number.
+                    </comment>
+                    <depends>
+                        <field id="use_p21_order_numbers">1</field>
+                    </depends>
+                </field>
+                <field id="email_sync_timeout" translate="label comment" type="text" sortOrder="260" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Confirmation Email Delay Timeout</label>
+                    <comment>Maximum time (in minutes) to wait for P21 order sync before sending out order confirmation emails</comment>
+                    <depends>
+                        <field id="use_p21_order_numbers">1</field>
+                    </depends>
+                </field>
+                <field id="enable_p21_contact_lookup" translate="label comment" type="select" sortOrder="265" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <label>Lookup Contact in P21 for Order Export</label>
+                    <comment>If Contact ID is missing in Magento, look it up in P21 by email</comment>
+                </field>
+                <field id="billing_address_payment_methods" translate="label" type="multiselect" sortOrder="240" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Force P21 Billing Address For Payment Types</label>
+                    <comment>Any of these selected payment types will force a look up of and substituion of the customers billing addresss at checkout, for what is availble in Prophet21</comment>
+                      <source_model>Ripen\Prophet21\Model\Config\PaymentMethods</source_model>
+                      <can_be_empty>1</can_be_empty>
+                </field>
+            </group>
+            <group id="email_alerts" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Email Alerts</label>
+                <group id="error" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Log Alerts</label>
+                    <field id="recipients" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Notification Recipients</label>
+                        <comment>Comma-delimited list of email addresses</comment>
+                        <config_path>p21/email_alerts/recipients</config_path>
+                    </field>
+                    <field id="threshold" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Notification Threshold</label>
+                        <comment>Send notifications by email for logs of this level and above</comment>
+                        <source_model>Ripen\Prophet21\Model\Config\LogLevels</source_model>
+                        <config_path>p21/email_alerts/threshold</config_path>
+                    </field>
+                </group>
+                <group id="order_export_check" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Order Export Check</label>
+                    <field id="recipients" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Notification Recipients</label>
+                        <comment>Comma-delimited list of email addresses</comment>
+                    </field>
+                    <field id="cron_schedule" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Order Export Check Cron Schedule</label>
+                        <validate>required-entry</validate>
+                        <comment>
+                            Send an email alert on this schedule if there are orders that have not received a P21 order number
+                            (i.e., that may have failed to import to P21).
+                        </comment>
+                    </field>
+                    <field id="threshold" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Order Export Check Threshold</label>
+                        <validate>required-entry validate-digits</validate>
+                        <comment>Allow this many minutes for a P21 order number to be received before alerting</comment>
+                    </field>
+                    <field id="window" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Order Export Check Monitor Window</label>
+                        <validate>required-entry validate-digits</validate>
+                        <comment>
+                            Report on orders placed this many minutes into the past. Should be set to at least the check interval
+                            configured above and may be configured above that to ensure that a missed run of the check schedule does
+                            not leave orders off the report.
+                        </comment>
+                    </field>
+                </group>
+            </group>
+            <group id="debug" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Debug Settings</label>
+                <field id="load_all_products" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Product Import: Import All</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Selecting "no" will import only updated products.</comment>
+                </field>
+                <field id="load_all_images" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Product Images Import: Import All</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Selecting "no" will import images for only updated products.</comment>
+                </field>
+                <field id="individual_products_import" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Product Import: Specific Restriction</label>
+                    <comment>
+                        Comma-delimited list of P21 product numbers (SKUs) to limit import to (applies to product, inventory, and image import).
+                        Will be ignored if the given feed has "import all" turned off (i.e., it is processing only recently updated products).
+                    </comment>
+                </field>
+                <field id="products_import_exclusions" translate="label" type="text" sortOrder="32" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Product Import: SKUs to Exclude</label>
+                    <comment>
+                        Comma-delimited list of P21 product numbers (SKUs) to exclude from import (applies to product, inventory, and image import).
+                        Note that this list is not mutually exclusive to Product Import: Specific Restriction; if you specify a SKU in both fields, your
+                        product sync data will be empty.
+                    </comment>
+                </field>
+                <field id="online_only_flag" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Use Online-Only Flag</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>
+                        When enabled, product API calls get online products only, per SimpleApps "online products" filter. Normally we want to
+                        sync all products, so this would not be enabled. Additionally, the "online" filter for SimpleApps is based on class 5
+                        values that are semi-hard-coded per client in their system. See ENG-103 for possible future evolution of this.
+                    </comment>
+                </field>
+                <field id="enable_historical_order_import_mode" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Order Import: Enable Historical Import Mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>When enabled, only new imported orders will be synced. New orders will be synced right after order creation.</comment>
+                </field>
+                <field id="individual_customer_ids" translate="label" type="text" sortOrder="45" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Order Import: Specific Customer Restriction</label>
+                    <comment>Comma-delimited list of P21 customer codes to limit order import to</comment>
+                </field>
+                <field id="exclude_individual_customer_ids" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Customer IDs to Exclude from Orders Imports</label>
+                    <comment>Comma delimited list of customer IDs to exclude from orders import</comment>
+                </field>
+                <field id="individual_order_ids" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Order Import: Specific Order Restriction</label>
+                    <comment>Comma-delimited list of P21 order numbers to limit order import to</comment>
+                </field>
+                <field id="days_limit_orders_import" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Order Import: Days Restriction</label>
+                    <comment>How many days of orders to import</comment>
+                </field>
+                <field id="enable_shipment_emails" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Shipment Emails</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Selecting No will stop outgoing shipment emails during P21 order sync. Selecting Yes will enable outgoing shipping emails, but only if general Magento setting (Stores > Configuration > Sales > Sales Emails > Shipping) is also enabled.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

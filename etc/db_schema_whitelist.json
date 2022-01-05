@@ -1,0 +1,52 @@
+{
+    "sales_order": {
+        "column": {
+            "web_orders_uid": true,
+            "p21_order_no": true,
+            "erp_customer_id": true
+        },
+        "index": {
+            "SALES_ORDER_WEB_ORDERS_UID": true,
+            "SALES_ORDER_P21_ORDER_NO": true,
+            "INDEX_ERP_CUSTOMER_ID": true
+        }
+    },
+    "p21_pick_lists": {
+        "column": {
+            "id": true,
+            "processed": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "p21_invoice": {
+        "column": {
+            "id": true,
+            "processed": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "quote_address": {
+        "column": {
+            "prophet_21_id": true
+        }
+    },
+    "sales_order_address": {
+        "column": {
+            "prophet_21_id": true
+        }
+    },
+    "sales_order_item": {
+      "column": {
+        "p21_unique_id": true
+      }
+    },
+    "quote_item": {
+      "column": {
+        "p21_unique_id": true
+      }
+    }
+}

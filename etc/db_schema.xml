@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="quote_address">
+        <column xsi:type="int" name="prophet_21_id" padding="10" unsigned="true" nullable="true" comment="P21 Ship-to ID"/>
+    </table>
+    <table name="sales_order">
+        <column xsi:type="int" name="web_orders_uid" padding="10" unsigned="true" nullable="false" comment="Web Orders UID"/>
+        <index referenceId="INDEX_WEB_ORDERS_UID" indexType="btree">
+            <column name="web_orders_uid"/>
+        </index>
+        <column xsi:type="int" name="p21_order_no" padding="10" unsigned="true" nullable="false" comment="P21 Order Number"/>
+        <index referenceId="INDEX_P21_ORDER_NO" indexType="btree">
+            <column name="p21_order_no"/>
+        </index>
+        <column xsi:type="int" name="erp_customer_id" padding="10" unsigned="true" nullable="false" comment="P21 Customer ID"/>
+        <index referenceId="INDEX_ERP_CUSTOMER_ID" indexType="btree">
+            <column name="erp_customer_id"/>
+        </index>
+    </table>
+    <table name="sales_order_address">
+        <column xsi:type="int" name="prophet_21_id" padding="10" unsigned="true" nullable="true" comment="P21 Ship-to ID"/>
+    </table>
+    <table name="p21_pick_lists" comment="P21 Pick List Number Tracking">
+        <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity ID and P21 Pick List number"/>
+        <column xsi:type="boolean" name="processed" nullable="false" comment="Pick List processed locally"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+    <table name="p21_invoice" comment="P21 Invoice  Number Tracking">
+        <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity ID and P21 Invoice number"/>
+        <column xsi:type="boolean" name="processed" nullable="false" comment="Invoice processed locally"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+    <table name="sales_order_item">
+        <column xsi:type="int" name="p21_unique_id" padding="10" unsigned="true" nullable="true" comment="P21 Unique Order Line Item ID"/>
+    </table>
+    <table name="quote_item">
+        <column xsi:type="int" name="p21_unique_id" padding="10" unsigned="true" nullable="true" comment="P21 Unique Order Line Item ID"/>
+    </table>
+</schema>

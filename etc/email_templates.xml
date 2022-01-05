@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
+    <template id="p21_notification_template" label="Log Notification" file="notification_email_template.html" type="text" module="Ripen_Prophet21" area="adminhtml"/>
+    <template id="p21_order_export_failure_template" label="Order Export Failure Alert" file="order_export_failure_template.html" type="html" module="Ripen_Prophet21" area="adminhtml"/>
+</config>

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="p21_order_export">
+        <job name="export_sales_orders" instance="Ripen\Prophet21\Cron\Sales\ExportOrders" method="execute">
+            <config_path>p21/feeds/order_export_cron_schedule</config_path>
+        </job>
+    </group>
+    <group id="p21_order_import_and_sync">
+        <job name="import_sales_orders" instance="Ripen\Prophet21\Cron\Sales\ImportOrders" method="execute">
+            <config_path>p21/feeds/order_import_cron_schedule</config_path>
+        </job>
+        <job name="sync_recent_orders" instance="Ripen\Prophet21\Cron\Sales\SyncRecentOrders" method="execute">
+            <config_path>p21/feeds/order_sync_recent_cron_schedule</config_path>
+        </job>
+        <job name="sync_all_orders" instance="Ripen\Prophet21\Cron\Sales\SyncAllOrders" method="execute">
+            <config_path>p21/feeds/order_sync_all_cron_schedule</config_path>
+        </job>
+    </group>
+    <group id="default">
+        <job name="generate_inventory_file" instance="Ripen\Prophet21\Cron\GenerateInventoryFile" method="execute">
+            <config_path>p21/feeds/inventory_file_cron_schedule</config_path>
+        </job>
+        <job name="generate_products_data_file" instance="Ripen\Prophet21\Cron\GenerateProductsDataFile" method="execute">
+            <config_path>p21/feeds/products_data_file_cron_schedule</config_path>
+        </job>
+        <job name="generate_images_data_file" instance="Ripen\Prophet21\Cron\GenerateImagesDataFile" method="execute">
+            <config_path>p21/feeds/images_data_file_cron_schedule</config_path>
+        </job>
+
+
+        <job name="sanitize_deleted_products" instance="Ripen\Prophet21\Cron\Products\SanitizeDeletedProducts" method="execute">
+            <config_path>p21/feeds/sanitize_deleted_products_cron_schedule</config_path>
+        </job>
+        <job name="check_order_export" instance="Ripen\Prophet21\Cron\Monitoring\OrderExportCheck" method="execute">
+            <config_path>p21/email_alerts/order_export_check/cron_schedule</config_path>
+        </job>
+    </group>
+</config>
