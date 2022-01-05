@@ -4,6 +4,10 @@
     <event name="sales_model_service_quote_submit_before">
         <observer name="sales_p21_backorders" instance="Ripen\Prophet21\Observer\Sales\SetBackOrderedItems" />
     </event>
+    <!-- check for UOM selection on quote product adds -->
+    <event name="sales_quote_product_add_after">
+        <observer name="sales_p21_selected_uom" instance="Ripen\Prophet21\Observer\Sales\SetSelectedUOMOnQuoteAdd" />
+    </event>
     <!-- check for customer specific prices on cart changes -->
     <event name="checkout_cart_save_before">
         <observer name="sales_p21_custom_price" instance="Ripen\Prophet21\Observer\Sales\SetCustomItemPricesOnCartChange" />
@@ -11,5 +15,9 @@
     <!-- associate customer's active p21 customer id to order -->
     <event name="sales_order_save_before">
         <observer name="active_p21_customer_id_sales_order_save_before" instance="Ripen\Prophet21\Observer\Sales\SetP21CustomerIdOnOrder" />
+    </event>
+    <!-- make sure quote item weight is correctly set for selected UOM -->
+    <event name="sales_quote_item_set_product">
+        <observer name="sales_selected_uom_quote_item_weight" instance="Ripen\Prophet21\Observer\Sales\UpdateQuoteItemWeightByCustomerUOM" />
     </event>
 </config>

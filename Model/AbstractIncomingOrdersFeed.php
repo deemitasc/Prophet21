@@ -297,7 +297,7 @@ abstract class AbstractIncomingOrdersFeed
             $storeCode = $this->multistoreHelper->getWholesaleStoreCode();
             $storeId = $this->multistoreHelper->getWholesaleStoreId();
 
-            //TODO: check if it can be hardcoded or needs a remapped value from api response
+            // TODO: check if it can be hardcoded or needs a remapped value from api response; update README if changed
             $paymentMethod = "invoicepayment";
         }
 
@@ -330,6 +330,7 @@ abstract class AbstractIncomingOrdersFeed
                         'tax_percent'=> $taxPercent,
                         'extended_price' => $this->api->parseLineItemExtendedPrice($p21OrderLineItem),
                         'p21_unique_id' => $this->api->parseOrderLineItemUniqueid($p21OrderLineItem),
+                        'uom' => $this->api->parseUom($p21OrderLineItem),
                     ];
                 } else {
                     $this->logger->error("Failed to import order_no [{$p21OrderNumber}] - product [{$sku}] is missing");
@@ -1028,6 +1029,7 @@ abstract class AbstractIncomingOrdersFeed
                 $quoteItem->setProduct($product);
 
                 $quoteItem->setData('p21_unique_id', $p21Item['p21_unique_id']);
+                $quoteItem->setData('uom', $p21Item['uom']);
                 $quoteItem->setQty($p21OrderedQuantity);
                 $quoteItem->setQtyCanceled($p21CancelledQuantity);
                 $quoteItem->setPrice($p21Item['price']);

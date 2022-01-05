@@ -222,7 +222,7 @@ class ExportOrders
             $lines[] = [
                 'item_id' => $orderItem->getSku(),
                 'qty' => $orderItem->getQtyOrdered(),
-                'uom' => $orderItem->getProduct()->getData('p21_default_selling_unit'),
+                'uom' => $orderItem->getData(\Ripen\Prophet21\Model\CustomerUOM::UOM_ITEM_KEY_NAME) ?: $orderItem->getProduct()->getData('p21_default_selling_unit'),
                 'source_loc_id' => $inventorySource,
                 'unit_price' => $orderItem->getPrice(),
                 'manual_price_override' => 'Y',

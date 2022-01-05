@@ -3,7 +3,8 @@
 namespace Ripen\Prophet21\Model\Config;
 
 use \Magento\Framework\App\Config\ScopeConfigInterface;
-use \Magento\Payment\Model\Config;
+use \Magento\Payment\Api\PaymentMethodListInterface;
+use \Magento\Framework\App\RequestInterface;
 
 class PaymentMethods extends \Magento\Framework\DataObject implements \Magento\Framework\Data\OptionSourceInterface
 {
@@ -13,31 +14,39 @@ class PaymentMethods extends \Magento\Framework\DataObject implements \Magento\F
     protected $appConfigScopeConfigInterface;
 
     /**
-     * @var Config
+     * @var PaymentMethodListInterface
      */
-    protected $paymentModelConfig;
+    protected $paymentMethodList;
+
+    /**
+     * @var RequestInterface
+     */
+    protected $request;
 
     /**
      * @param ScopeConfigInterface $appConfigScopeConfigInterface
-     * @param Config $paymentModelConfig
+     * @param PaymentMethodListInterface $paymentMethodList
+     * @param RequestInterface $request
      */
     public function __construct(
         ScopeConfigInterface $appConfigScopeConfigInterface,
-        Config $paymentModelConfig
+        PaymentMethodListInterface $paymentMethodList, 
+        RequestInterface $request
     ) {
         $this->appConfigScopeConfigInterface = $appConfigScopeConfigInterface;
-        $this->paymentModelConfig = $paymentModelConfig;
+        $this->paymentMethodList = $paymentMethodList;
+        $this->request = $request;
     }
 
     public function toOptionArray()
     {
-        $payments = $this->paymentModelConfig->getActiveMethods();
+        $storeId = (int)$this->request->getParam('store');
+        $payments = $this->paymentMethodList->getActiveList($storeId);
         $methods = [];
-        foreach ($payments as $paymentCode => $paymentModel) {
-            $paymentTitle = $this->appConfigScopeConfigInterface->getValue('payment/' . $paymentCode . '/title');
-            $methods[$paymentCode] = [
-                'label' => $paymentTitle,
-                'value' => $paymentCode
+        foreach ($payments as $payment) {
+            $methods[$payment->getCode()] = [
+                'label' => $payment->getTitle(),
+                'value' => $payment->getCode()
             ];
         }
         return $methods;

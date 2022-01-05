@@ -37,8 +37,10 @@
     </table>
     <table name="sales_order_item">
         <column xsi:type="int" name="p21_unique_id" padding="10" unsigned="true" nullable="true" comment="P21 Unique Order Line Item ID"/>
+        <column xsi:type="varchar" name="uom" nullable="true" length="255" comment="UOM"/>
     </table>
     <table name="quote_item">
         <column xsi:type="int" name="p21_unique_id" padding="10" unsigned="true" nullable="true" comment="P21 Unique Order Line Item ID"/>
+        <column xsi:type="varchar" name="uom" nullable="true" length="255" comment="UOM"/>
     </table>
 </schema>

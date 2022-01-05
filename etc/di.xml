@@ -3,8 +3,6 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Magento\InventorySales\Plugin\StockState\CheckQuoteItemQtyPlugin"
                 type="Ripen\Prophet21\Plugin\CheckQuoteItemQtyPlugin"/>
-    <preference for="Ripen\Prophet21\Api\ProductsInterface" type="Ripen\Prophet21\Model\Products"/>
-    <preference for="Ripen\Prophet21\Api\ImagesInterface" type="Ripen\Prophet21\Model\Images"/>
     <preference for="Ripen\Prophet21\Api\CustomerPricesInterface" type="Ripen\Prophet21\Model\Products"/>
     <preference for="Magento\CatalogImportExport\Model\Import\Product\Validator\Media"
                 type="Ripen\Prophet21\Model\Import\Product\Validator\Media"/>
@@ -78,5 +76,14 @@
     </type>
     <type name="Greenwing\Technology\Block\Custom">
         <plugin name="set_p21_properties" type="Ripen\Prophet21\Plugin\Greenwing\SetCartItemProperties"/>
+    </type>
+    <type name="Magento\Checkout\CustomerData\ItemInterface">
+        <plugin name="ripen_set_product_additional_data" type="Ripen\Prophet21\Plugin\GetAdditionalCustomerItemData" />
+    </type>
+    <type name="Magento\Catalog\Model\Product">
+        <plugin name="set_customer_uom_buy_request" type="Ripen\Prophet21\Plugin\SetCustomerUOMOnBuyRequest" />
+    </type>
+    <type name="Magento\CatalogInventory\Model\Quote\Item\QuantityValidator\QuoteItemQtyList">
+        <plugin name="ripen_quote_item_quantity_normalizer" type="Ripen\Prophet21\Plugin\UpdateQuoteQtyListOnCustomerUOM" />
     </type>
 </config>

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
+    <extension_attributes for="Magento\Quote\Api\Data\AddressInterface">
+        <attribute code="prophet_21_id" type="int"/>
+        <attribute code="p21_default_carrier_id" type="int"/>
+    </extension_attributes> 
+</config>

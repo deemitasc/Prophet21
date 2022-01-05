@@ -91,14 +91,15 @@ class DataHelper extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * @param $storeId
      * @return string|null
      */
-    public function getP21BillToPaymentMethods()
+    public function getP21BillToPaymentMethods($storeId = null)
     {
-        if ($this->scopeConfig->getValue('p21/integration/billing_address_payment_methods')) {
-           return $this->scopeConfig->getValue('p21/integration/billing_address_payment_methods');
+        if ($this->scopeConfig->getValue('p21/integration/billing_address_payment_methods', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId)) {
+           return $this->scopeConfig->getValue('p21/integration/billing_address_payment_methods', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
         }
-
+        
         return null;
     }
 }

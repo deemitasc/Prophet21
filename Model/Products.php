@@ -9,6 +9,7 @@ class Products extends \Ripen\Prophet21\Model\Feed implements \Ripen\Prophet21\A
     const BATCH_SIZE = 100;
 
     const P21_ATTRIBUTES = [
+        'inv_mast_uid',
         'class_id2',
         'class_id3',
         'class_id4',
@@ -23,8 +24,10 @@ class Products extends \Ripen\Prophet21\Model\Feed implements \Ripen\Prophet21\A
         'date_last_modified',
         'haz_mat_flag',
         'warranty_days',
-        'short_code'
+        'short_code',
     ];
+
+    const PAIRED_VALUES_DELIMITER = ':';
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
@@ -188,7 +191,8 @@ class Products extends \Ripen\Prophet21\Model\Feed implements \Ripen\Prophet21\A
                     [
                         'itemsAlternatecodes',
                         'itemsAccessories',
-                        'itemsStock'
+                        'itemsStock',
+                        'itemsUom',
                     ],
                     $this->dataHelper->getIndividualProductsImport(),
                     $this->dataHelper->getProductsLastModifiedFilter()
@@ -295,6 +299,7 @@ class Products extends \Ripen\Prophet21\Model\Feed implements \Ripen\Prophet21\A
                     $record['deferred_stock_update'] = 0;
                     $record['use_config_deferred_stock_update'] = 1;
                     $record['related_skus'] = $this->formatAccessories($product['resources']['itemsAccessories']);
+                    $record['p21_available_product_uom'] = $this->formatUOM($product['resources']['itemsUom']['units']);
 
                     foreach ($excludedAttributes as $excludedAttributeName) {
                         unset($record[$excludedAttributeName]);
@@ -330,6 +335,9 @@ class Products extends \Ripen\Prophet21\Model\Feed implements \Ripen\Prophet21\A
         $magentoProducts = $this->productCollectionFactory->create();
         $magentoProducts->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
         $magentoProducts->addAttributeToFilter('type_id', ['neq' => 'configurable']);
+
+        // only include products found on P21 in the sanitization
+        $magentoProducts->addAttributeToFilter('p21_inv_mast_uid', ['notnull' => true]);
 
         $itemListString = $this->dataHelper->getIndividualProductsImport();
         $individualProductsList = [];
@@ -427,10 +435,11 @@ class Products extends \Ripen\Prophet21\Model\Feed implements \Ripen\Prophet21\A
      * @param int $customerId Magento customer ID
      * @param array|string $skus
      * @param array|string $quantities
+     * @param array|string $UOM
      * @return array
      * @throws P21ApiException
      */
-    public function productCustomerPrices($customerId, $skus, $quantities = null)
+    public function productCustomerPrices($customerId, $skus, $quantities = null, $UOM = null)
     {
         if (is_string($skus)) {
             $skus = json_decode(base64_decode($skus), true);
@@ -450,7 +459,7 @@ class Products extends \Ripen\Prophet21\Model\Feed implements \Ripen\Prophet21\A
             // fetch P21 customer code for customer $customerId
             $p21CustomerId = $this->customerHelper->getP21CustomerIdByMagentoCustomerId((int) $customerId);
 
-            $rawPriceData = $this->api->getCustomerPriceData($p21CustomerId, $skus, $quantities);
+            $rawPriceData = $this->api->getCustomerPriceData($p21CustomerId, $skus, $quantities, $UOM);
             // TODO: Log warning for any prices that were queried but are missing in API response.
 
             $priceData = [];
@@ -728,6 +737,20 @@ class Products extends \Ripen\Prophet21\Model\Feed implements \Ripen\Prophet21\A
     {
         $codes = implode(',', array_column($alternateCodes, 'alternate_code'));
         return $codes;
+    }
+
+    /**
+     * @param $UOM
+     * @return string
+     */
+    public function formatUOM($UOM)
+    {
+        $values = array_combine(array_column($UOM, 'unit_of_measure'), array_column($UOM, 'unit_size'));
+        $pairedValues = [];
+        foreach($values as $measure => $size) {
+            $pairedValues[] = $measure . self::PAIRED_VALUES_DELIMITER . $size;
+        }
+        return implode(',', $pairedValues);
     }
 
     /**

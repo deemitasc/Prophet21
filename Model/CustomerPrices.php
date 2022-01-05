@@ -37,7 +37,7 @@ class CustomerPrices
         }
 
         // Calculate pricing for a given combination of products ordered together, taking into account price families.
-        $quantities = $skus = [];
+        $UOM = $quantities = $skus = [];
         /** @var Item $item */
         foreach ($items as $item) {
             if ($item->hasSkipP21Price()) {
@@ -45,9 +45,10 @@ class CustomerPrices
             }
             $skus[] = $item->getSku();
             $quantities[] = $item->getQty();
+            $UOM[] = $item->getData('uom') ?? null;
         }
         $priceData = array_column(
-            $this->p21Products->productCustomerPrices($quote->getCustomer()->getId(), $skus, $quantities),
+            $this->p21Products->productCustomerPrices($quote->getCustomer()->getId(), $skus, $quantities, $UOM),
             null,
             'sku'
         );

@@ -41,12 +41,14 @@
     },
     "sales_order_item": {
       "column": {
-        "p21_unique_id": true
+        "p21_unique_id": true,
+        "uom": true
       }
     },
     "quote_item": {
       "column": {
-        "p21_unique_id": true
+        "p21_unique_id": true,
+        "uom": true
       }
     }
 }

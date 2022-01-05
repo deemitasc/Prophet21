@@ -3,12 +3,16 @@
     <default>
         <p21>
             <feeds>
-                <order_export_cron_schedule>*/15 * * * *</order_export_cron_schedule>
                 <order_import_cron_schedule>0 21 * * *</order_import_cron_schedule>
                 <order_sync_all_cron_schedule>0 2 * * *</order_sync_all_cron_schedule>
                 <order_sync_recent_cron_schedule>*/15 * * * *</order_sync_recent_cron_schedule>
                 <order_sync_recent_time_window>30</order_sync_recent_time_window>
-                <inventory_file_cron_schedule>*/15 * * * *</inventory_file_cron_schedule>
+                <order_export_cron_schedule>*/15 * * * *</order_export_cron_schedule>
+                <inventory_file_cron_schedule>15 * * * *</inventory_file_cron_schedule>
+                <products_data_file_cron_schedule>40 * * * *</products_data_file_cron_schedule>
+                <images_data_file_cron_schedule>20 * * * *</images_data_file_cron_schedule>
+                <sanitize_deleted_products_cron_schedule>0 * * * *</sanitize_deleted_products_cron_schedule>
+                <images_import_directory>import/images</images_import_directory>
                 <use_credit_card_codes_for_payment_type>0</use_credit_card_codes_for_payment_type>
                 <default_shipping_method_code>flatrate_flatrate</default_shipping_method_code>
                 <auto_approve_orders_for_guests>0</auto_approve_orders_for_guests>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <section id="p21" translate="label" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
+        <section id="p21" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
             <label>P21 Integration</label>
             <tab>service</tab>
@@ -74,10 +74,12 @@
                 <field id="firebear_import_products_job_id" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Firebear Import Products Job ID</label>
                     <validate>required-entry</validate>
+                    <comment>Used to determine the last import time for generation of next data file (when "Import All" is disabled).</comment>
                 </field>
                 <field id="firebear_import_images_job_id" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Firebear Import Images Job ID</label>
                     <validate>required-entry</validate>
+                    <comment>Used to determine the last import time for generation of next data file (when "Import All" is disabled).</comment>
                 </field>
                 <field id="import_directory" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Path to Import Directory</label>
@@ -103,7 +105,7 @@
                     <validate>required-entry</validate>
                 </field>
             </group>
-            <group id="integration" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
+            <group id="integration" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Integration Properties</label>
                 <field id="default_inventory_source_id" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Default Shipping Warehouse</label>
@@ -122,6 +124,10 @@
                 <field id="stock_post_load" translate="label" type="select" sortOrder="115" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Refresh Stock Status after Page Load</label>
                     <source_model>Ripen\Prophet21\Model\Config\StockLocationsModes</source_model>
+                    <comment>
+                        When to load updated inventory data via AJAX (and thereby bypass full-page cache).
+                        Depending on other settings, this refresh may load data from Magento database or from P21 API.
+                    </comment>
                 </field>
                 <field id="stock_popup" translate="label" type="select" sortOrder="117" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Inventory Detail Popup</label>
@@ -146,7 +152,8 @@
                 <field id="store_ids_mapping" translate="label" type="textarea" sortOrder="123" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Store ID Mapping</label>
                     <comment><![CDATA[
-                        JSON object mapping P21 Class 5 values to Magento store codes (targets may be strings or arrays of strings)
+                        JSON object mapping P21 Class 5 values to Magento store codes (targets may be strings or arrays of strings). Multiple
+                        class values may be mapped to the same store codes.
                     ]]></comment>
                     <validate>required-entry</validate>
                 </field>
@@ -157,19 +164,23 @@
                     <config_path>p21/feeds/wholesale_discount_rule_sku</config_path>
                 </field>
                 <field id="retail_customer_id" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>Retail Customer ID</label>
+                    <label>Web-Only Customer ID</label>
                     <validate>required-entry</validate>
                     <config_path>p21/feeds/retail_customer_id</config_path>
+                    <comment>P21 Customer ID used for orders not able to be tied to a P21 customer (guest orders or Magento users without a P21 customer ID set)</comment>
                 </field>
                 <field id="use_library_pricing_for_retail_customer" translate="label" type="select" sortOrder="145" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Use Library Prices for Retail</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>If set to "Yes", libraryPrice will be used for the retail customer pricing instead of default listPrice</comment>
+                    <comment>
+                        If set to "Yes", library pricing will be used for pricing for web-only customers instead of the list price field set below.
+                        Enable only if there is a price book configured for the web-only customer above that should be used.
+                    </comment>
                 </field>
                 <field id="default_price_field" translate="label" type="select" sortOrder="145" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>Default Price Field</label>
+                    <label>Default List Price Field</label>
                     <source_model>Ripen\Prophet21\Model\Config\PriceFields</source_model>
-                    <comment>If there is no Library or Contract price set, the price will be pulled from the field selected above</comment>
+                    <comment>If there is no library or contract price set, the website price will be pulled from this list price field.</comment>
                 </field>
                 <!-- TODO: Rename retail_company_id to company_id, including migration of current config, as it is not retail-specific. -->
                 <field id="retail_company_id" translate="label" type="text" sortOrder="150" showInDefault="1" showInWebsite="0" showInStore="0">
@@ -177,58 +188,69 @@
                     <validate>required-entry</validate>
                     <config_path>p21/feeds/retail_company_id</config_path>
                 </field>
-                <field id="retail_store_code" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>Retail Store Code</label>
+                <field id="wholesale_website_code" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Wholesale Website Code</label>
                     <validate>required-entry</validate>
-                    <config_path>p21/feeds/retail_store_code</config_path>
+                    <config_path>p21/feeds/wholesale_website_code</config_path>
+                    <comment>
+                        Website into which to import offline orders in P21 (not placed through Magento) for all customers other than the web-only
+                        customer ID set above. (This will be all or almost all orders created offline in P21.)
+                    </comment>
                 </field>
                 <field id="wholesale_store_code" translate="label" type="text" sortOrder="170" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Wholesale Store Code</label>
                     <validate>required-entry</validate>
                     <config_path>p21/feeds/wholesale_store_code</config_path>
-                    <comment>If a separate Wholesale Store is not present, set this value to the Retail Store Code.</comment>
+                    <comment>Store corresponding to Wholesale Website Code above.</comment>
                 </field>
                 <field id="retail_website_code" translate="label" type="text" sortOrder="180" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Retail Website Code</label>
                     <validate>required-entry</validate>
                     <config_path>p21/feeds/retail_website_code</config_path>
+                    <comment>
+                        Website into which to import offline orders in P21 (not placed through Magento) tied to the web-only customer ID set above.
+                        Since by definition that customer ID is intended for web orders specifically, this is not a common occurance. Note that
+                        if there is not a separate guest/retail store, set this to the same as the Wholesale Store Code.
+                    </comment>
                 </field>
-                <field id="wholesale_website_code" translate="label" type="text" sortOrder="190" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>Wholesale Website Code</label>
+                <field id="retail_store_code" translate="label" type="text" sortOrder="190" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Retail Store Code</label>
                     <validate>required-entry</validate>
-                    <config_path>p21/feeds/wholesale_website_code</config_path>
-                    <comment>If a separate Wholesale Website is not present, set this value to the Retail Website Code.</comment>
+                    <config_path>p21/feeds/retail_store_code</config_path>
+                    <comment>Store corresponding to Retail Website Code above.</comment>
                 </field>
                 <field id="sales_reps_user_group_code" translate="label" type="text" sortOrder="210" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>Sales Reps Users Group Code</label>
-                    <validate>required-entry</validate>
+                    <label>Sales Rep Customer Group Code</label>
                     <config_path>p21/feeds/sales_reps_user_group_code</config_path>
+                    <comment>Magento customers associated to this customer group may access sales rep functionality.</comment>
                 </field>
                 <field id="inventory_display_limit" translate="label" type="text" sortOrder="230" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Inventory Display Limit</label>
                     <validate>required-entry</validate>
+                    <comment>Inventory on the site will be capped at this amount (e.g., if set to 100, but 1000 are in stock, will say "100+").</comment>
                 </field>
                 <field id="excluded_attribute_names" translate="label" type="text" sortOrder="230" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>Attributes Always Excluded From Sync</label>
+                    <label>Attributes Always Excluded From Product Sync</label>
                     <comment>Comma delimited list of P21 attributes to ignore during sync</comment>
                 </field>
                 <field id="enable_new_product_import" translate="label" type="select" sortOrder="230" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Enable New Product Import</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Setting this to No will only update existing products, skipping new product creation</comment>
+                    <comment>Setting this to No will update only existing products, skipping new product creation</comment>
                 </field>
                 <field id="uoms_to_allow_decimal_qty" translate="label" type="text" sortOrder="232" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>Units of Measure to Allow Qty uses Decimals</label>
-                    <comment>Comma delimited list of non-countable product UOM, such as FT or LB, that should allow for such products' quantities to use decimals.</comment>
+                    <label>Units of Measure Saleable by Partial Units</label>
+                    <comment>Comma-delimited list of non-countable product UOMs, such as FT or LB, that should allow for sale by partial amounts.</comment>
                 </field>
                 <field id="allow_import_for_products_without_price" translate="label" type="select" sortOrder="235" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Allow Import for Products With No Price</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="use_uploaded_files_image_names" translate="label" type="select" sortOrder="240" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>Use Uploaded Files Image Names</label>
+                    <!-- TODO: Rename the config field key to be clearer. -->
+                    <label>Find Image Files Based on SKU</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Selecting 'No' will pull image names from P21 and will try to find them on file server</comment>
+                    <comment>Selecting 'No' will find images in the configured directory matching P21-configured image links</comment>
                 </field>
                 <field id="use_p21_order_numbers" translate="label" type="select" sortOrder="250" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Use P21 Order Numbers in Magento</label>
@@ -265,12 +287,27 @@
                     <label>Lookup Contact in P21 for Order Export</label>
                     <comment>If Contact ID is missing in Magento, look it up in P21 by email</comment>
                 </field>
-                <field id="billing_address_payment_methods" translate="label" type="multiselect" sortOrder="240" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="billing_address_payment_methods" translate="label" type="multiselect" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Force P21 Billing Address For Payment Types</label>
-                    <comment>Any of these selected payment types will force a look up of and substituion of the customers billing addresss at checkout, for what is availble in Prophet21</comment>
-                      <source_model>Ripen\Prophet21\Model\Config\PaymentMethods</source_model>
-                      <can_be_empty>1</can_be_empty>
+                    <comment>Any of these selected payment types will force a look up of and substitution of the customer's billing addresss at checkout, for what is availble in P21</comment>
+                    <source_model>Ripen\Prophet21\Model\Config\PaymentMethods</source_model>
+                    <can_be_empty>1</can_be_empty>
                 </field>
+                <group id="uom_configuration" translate="label" type="text" sortOrder="270" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>UOM Configuration</label>
+                    <field id="enable_uom_selection" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <label>Enable UOM Shopping Selection</label>
+                        <comment>Allows customers to select the UOM to purchase by, when the product they are shopping has more than 1 UOM.</comment>
+                    </field>
+                    <field id="disabled_uom" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Disabled UOM</label>
+                        <comment>
+                            Comma-delimited list of UOM to hide from display on the product.  Not applicable for
+                            products whose only available UOM is the UOM to be hidden.
+                        </comment>
+                    </field>
+                </group>
             </group>
             <group id="email_alerts" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Email Alerts</label>

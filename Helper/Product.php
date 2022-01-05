@@ -123,4 +123,115 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
             return null;
         }
     }
+
+    /**
+     * @return bool
+     */
+    public function isUOMSelectionEnabled()
+    {
+        return (bool) $this->scopeConfig->getValue('p21/integration/uom_configuration/enable_uom_selection');
+    }
+
+    /**
+     * @return array
+     */
+    protected function getGloballyDisabledUOM()
+    {
+        $UOM = $this->scopeConfig->getValue('p21/integration/uom_configuration/disabled_uom');
+        $UOM = explode(',', $UOM);
+        $UOM = array_map('trim', $UOM);
+
+        return $UOM;
+    }
+
+    /**
+     * @param \Magento\Catalog\Model\Product $product
+     * @return array
+     */
+    public function getAvailableProductUOM($product)
+    {
+        $availableUOM = $product->getData('p21_available_product_uom');
+        $availableUOM = explode(',', $availableUOM);
+
+        $availableUOMValues = [];
+        foreach($availableUOM as $value) {
+            $UOMPair =  $this->parseUOMSizePairString($value);
+            $availableUOMValues[$UOMPair['uom']] = $UOMPair;
+        }
+
+        $globallyDisabledUOM = $this->getGloballyDisabledUOM();
+        $disabledUOM = $this->getProductDisabledUOM($product);
+        $UOMToFilter = array_merge($globallyDisabledUOM, $disabledUOM);
+
+        foreach($UOMToFilter as $filter) {
+            unset($availableUOMValues[$filter]);
+        }
+
+        return $availableUOMValues;
+    }
+
+    /**
+     * @param $UOMPairString
+     * @return array
+     */
+    public function parseUOMSizePairString($UOMPairString)
+    {
+        $UOMPairString = trim($UOMPairString);
+        if (! empty($UOMPairString)) {
+            list($UOMValue, $UOM) = explode(\Ripen\Prophet21\Model\Products::PAIRED_VALUES_DELIMITER, $UOMPairString);
+        }
+        return [
+            'uom' => $UOMValue ?? '',
+            'size' => $UOM ?? '',
+            'value_string' => $UOMPairString,
+        ];
+    }
+
+    /**
+     * @param $UOMPairString
+     * @return mixed|null
+     */
+    public function getUOMValueFromString($UOMPairString)
+    {
+        $parsedValues = $this->parseUOMSizePairString($UOMPairString);
+
+        return $parsedValues['uom'] ?? null;
+    }
+
+    /**
+     * @param $UOMPairString
+     * @return mixed|null
+     */
+    public function getUOMSizeFromString($UOMPairString)
+    {
+        $parsedValues = $this->parseUOMSizePairString($UOMPairString);
+
+        return $parsedValues['size'] ?? null;
+    }
+
+    /**
+     * @param \Magento\Catalog\Model\Product $product
+     * @return array
+     */
+    protected function getProductDisabledUOM($product)
+    {
+        $UOM = $product->getData('hidden_uom_list');
+        $UOM = explode(',', $UOM);
+        $UOM = array_map('trim', $UOM);
+
+        return $UOM;
+    }
+
+    /**
+     * @param \Magento\Catalog\Model\Product $product
+     * @return array|null
+     */
+    public function getProductDefaultUOM($product)
+    {
+        $defaultSellingUnit = $product->getData('p21_default_selling_unit');
+
+        $availableUOM = $this->getAvailableProductUOM($product);
+
+        return array_key_exists($defaultSellingUnit, $availableUOM) ? $availableUOM[$defaultSellingUnit] : null;
+    }
 }
