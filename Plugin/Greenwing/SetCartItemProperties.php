@@ -49,11 +49,11 @@ class SetCartItemProperties
                 continue;
             }
 
-            $itemUom =
-                $this->getSelectedUom($quoteItem)
+            $itemUOM =
+                $this->getSelectedUOM($quoteItem)
                 ?: $quoteItem->getProduct()->getData('p21_default_selling_unit');
-            if ($itemUom) {
-                $punchoutItems[$punchoutItemIndex]->UOM = $itemUom;
+            if ($itemUOM) {
+                $punchoutItems[$punchoutItemIndex]->UOM = $itemUOM;
             }
             ++$punchoutItemIndex;
         }
@@ -65,9 +65,9 @@ class SetCartItemProperties
      * @param QuoteItem $quoteItem
      * @return string
      */
-    protected function getSelectedUom($quoteItem)
+    protected function getSelectedUOM($quoteItem)
     {
-        $selectedUomData = $quoteItem->getBuyRequest()->getCartUom();
-        return explode(':', $selectedUomData)[0];
+        $selectedUOMData = $quoteItem->getBuyRequest()->getCartUom();
+        return explode(':', $selectedUOMData)[0];
     }
 }

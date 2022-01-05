@@ -28,7 +28,9 @@
     "require": {
         "php": "^7.2",
         "magento/framework": "*",
-        "ripenecommerce/magento2-simpleapps": "^2.4.0"
+        "ripenecommerce/magento2-payment-by-invoice": "^1.0.0",
+        "ripenecommerce/magento2-promo-rule-sku": "^1.0.0",
+        "ripenecommerce/magento2-simpleapps": "^2.6.0"
     },
     "autoload": {
         "files": [

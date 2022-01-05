@@ -13,6 +13,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Locale\FormatInterface;
 use Magento\InventoryCatalogApi\Model\GetSkusByProductIdsInterface;
 use Magento\InventorySales\Model\IsProductSalableCondition\BackOrderNotifyCustomerCondition;
+use Magento\InventorySales\Model\IsProductSalableCondition\ManageStockCondition;
 use Magento\InventorySales\Model\IsProductSalableForRequestedQtyCondition\ProductSalabilityError;
 use Magento\InventorySalesApi\Api\Data\SalesChannelInterface;
 use Magento\InventorySalesApi\Api\IsProductSalableForRequestedQtyInterface;
@@ -61,6 +62,11 @@ class CheckQuoteItemQtyPlugin
     protected $backOrderNotifyCustomerCondition;
 
     /**
+     * @var ManageStockCondition
+     */
+    protected $manageStockCondition;
+
+    /**
      * @var Api
      */
     protected $api;
@@ -88,6 +94,7 @@ class CheckQuoteItemQtyPlugin
      * @param StockResolverInterface $stockResolver
      * @param StoreManagerInterface $storeManager
      * @param BackOrderNotifyCustomerCondition $backOrderNotifyCustomerCondition
+     * @param ManageStockCondition $manageStockCondition
      * @param Api $api
      * @param MessageManager $messageManager
      * @param CheckoutSession $checkoutSession
@@ -102,6 +109,7 @@ class CheckQuoteItemQtyPlugin
         StockResolverInterface $stockResolver,
         StoreManagerInterface $storeManager,
         BackOrderNotifyCustomerCondition $backOrderNotifyCustomerCondition,
+        ManageStockCondition $manageStockCondition,
         Api $api,
         MessageManager $messageManager,
         CheckoutSession $checkoutSession,
@@ -114,6 +122,7 @@ class CheckQuoteItemQtyPlugin
         $this->stockResolver = $stockResolver;
         $this->storeManager = $storeManager;
         $this->backOrderNotifyCustomerCondition = $backOrderNotifyCustomerCondition;
+        $this->manageStockCondition = $manageStockCondition;
         $this->api = $api;
         $this->messageManager = $messageManager;
         $this->checkoutSession = $checkoutSession;
@@ -124,6 +133,10 @@ class CheckQuoteItemQtyPlugin
      * Most of the code in this function is the same as
      * Magento\InventorySales\Plugin\StockState\CheckQuoteItemQtyPlugin::aroundCheckQuoteItemQty,
      * with the only addition being the netStock check against the API at the end
+     * 
+     * TODO: Determine why this needs to copy/paste the core code instead of just calling proceed()
+     * or even just being an `after` plugin. Fix or note why here. As it stands currently, the
+     * copied code is out of date with core and may carry bugs/incompatibilities.
      *
      * @param StockStateInterface $subject - not used due to deprecation
      * @param \Closure $proceed
@@ -151,7 +164,7 @@ class CheckQuoteItemQtyPlugin
         $result = $this->objectFactory->create();
         $result->setHasError(false);
 
-        $qty = $this->getNumber($itemQty);
+        $qty = $this->getNumber(max($itemQty, $qtyToCheck));
 
         $skus = $this->getSkusByProductIds->execute([$productId]);
         $productSku = $skus[$productId];
@@ -184,14 +197,34 @@ class CheckQuoteItemQtyPlugin
              * will prevent the cart from being able to be checked out
              */
             $netStock = $this->api->getItemNetStock($productSku);
+            $hasManagedStock = !$this->manageStockCondition->execute($productSku, $stockId);
 
-            if ($qty > $netStock) {
+            if ($qty > $netStock && $hasManagedStock) {
                 if ($netStock >= 1) {
-                    $itemMessage = __(
-                        'Only %1 in stock, so remaining %2 will be backordered.',
-                        $netStock,
-                        ($qty - $netStock)
-                    );
+                    /**
+                     * If the $qtyToCheck became higher than $itemQty, then it was changed due to
+                     * \Ripen\Prophet21\Plugin\UpdateQuoteQtyListOnCustomerUOM->beforeGetQty()
+                     * normalizing $qtyToCheck with the selected product UOM
+                     *
+                     * This special message conveys the fact that given the customer's selected UOM, there aren't
+                     * enough base quantity to cover that selected UOM. For example, 1 case is equal to 10 boxes, and 1
+                     * box is the base quantity/default selling unit, but there are only 2 boxes in stock, so 8 boxes are
+                     * on backorder before the full 10 box can be used to fill the 1 case order.
+                     *
+                     * Furthermore, because we don’t have the quote item data here to express this in the customer’s
+                     * selected UOM increments (such technical deficiency necessitated the use of
+                     * \Ripen\Prophet21\Plugin\UpdateQuoteQtyListOnCustomerUOM->beforeGetQty() in the first place),
+                     * the wording is left deliberately vague without mentioning the specific UOM.
+                     */
+                    if ($qtyToCheck > $itemQty) {
+                        $itemMessage = __("Insufficient quantity in stock, so will be partially backordered.");
+                    } else {
+                        $itemMessage = __(
+                            'Only %1 in stock, so remaining %2 will be backordered.',
+                            $netStock,
+                            ($qty - $netStock)
+                        );
+                    }
                 } else {
                     $itemMessage = __('None in stock, so will be backordered.');
                 }

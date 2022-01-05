@@ -20,6 +20,7 @@ class ToOrderItem
         }
 
         $orderItem->setData('p21_unique_id', $item->getData('p21_unique_id'));
+        $orderItem->setData('uom', $item->getData('uom'));
 
         return $orderItem;
     }

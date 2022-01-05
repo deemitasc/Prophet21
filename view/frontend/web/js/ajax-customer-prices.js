@@ -36,11 +36,18 @@ define([
         // make sure there are prices present to be potentially replaced, as well as product item numbers to fetch SKUs from, before we proceed
         if (prices.length > 0 && itemNumbers.length > 0) {
             itemNumbers.each(function() {
-                var sku = $(this).data('sku'),
+                // we use jquery's attr method instead of the data method for sku to ensure we are getting a string sku.  
+                // without using the attr method full numeric skus would be returned as integers and calls to toUpperCase would fail.
+                var sku = $(this).attr('data-sku'),
                     productId = $(this).data('product-id'),
                     childSkuJson = $(this).find('.product-child-sku-json');
 
                 if (typeof sku !== 'undefined') {
+                    // normalize any sku we pull from the dom before it hits p21. p21 uses & returns fully capitalized skus.
+                    // without this normalization our javascript was trying to match fully capitalized skus from p21 to whatever sku we had entered in magento. 
+                    // if the sku in magento was mixed case it would cause customer pricing lookup to fail.
+                    sku = sku.toUpperCase();
+
                     // queue up skus to look up
                     skus.push(sku);
 
@@ -70,6 +77,8 @@ define([
                                 productId = childSkus[index]['id'];
 
                             if (typeof childSku !== 'undefined') {
+                                // normalize the child sku here for the same reasons as above
+                                childSku = childSku.toUpperCase();
                                 // queue up skus to look up
                                 skus.push(childSku);
                                 // keep track of child sku information

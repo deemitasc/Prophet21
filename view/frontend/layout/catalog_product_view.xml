@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="product.info.form.content">
+            <block class="Magento\Catalog\Block\Product\View"
+                   ifconfig="p21/integration/uom_configuration/enable_uom_selection"
+                   template="Ripen_Prophet21::cart/uom.phtml"
+                   name="cart-uom" before="product.info.addtocart"/>
+        </referenceBlock>
+    </body>
+</page>

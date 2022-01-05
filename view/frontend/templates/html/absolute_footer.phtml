@@ -4,6 +4,9 @@ $wholesaleHelper = $this->helper('Ripen\Prophet21\Helper\WholesaleHelper');
 
 /** @var \Ripen\Prophet21\Helper\MsiHelper $msiHelper */
 $msiHelper = $this->helper('Ripen\Prophet21\Helper\MsiHelper');
+
+/** @var \Ripen\Prophet21\Helper\Product $p21ProductHelper */
+$p21ProductHelper = $this->helper('Ripen\Prophet21\Helper\Product');
 ?>
 <?php if ($msiHelper->shouldRefreshStockPostLoad() || $msiHelper->shouldShowStockPopup()):?>
 <script type="text/x-magento-init">
@@ -26,6 +29,16 @@ $msiHelper = $this->helper('Ripen\Prophet21\Helper\MsiHelper');
             "Ripen_Prophet21/js/ajax-customer-prices": {},
             "Ripen_Prophet21/js/data/customer-code": {},
             "Ripen_Prophet21/js/google-analytics": {}
+        }
+    }
+</script>
+<?php endif;?>
+
+<?php if ($p21ProductHelper->isUOMSelectionEnabled()):?>
+    <script type="text/x-magento-init">
+    {
+        "*": {
+            "Ripen_Prophet21/js/uom-selection": {}
         }
     }
 </script>

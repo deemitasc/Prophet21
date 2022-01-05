@@ -1,0 +1,11 @@
+<?php
+/** @var \Magento\Checkout\Block\Cart\Item\Renderer $block */
+$item = $block->getItem();
+
+if (!empty($item)):
+    $itemUOM = $item->getData(\Ripen\Prophet21\Model\CustomerUOM::UOM_ITEM_KEY_NAME);
+?>
+    <?php if (!empty($itemUOM)):?>
+        Selected UOM: <strong><?= $itemUOM; ?></strong>
+    <?php endif; ?>
+<?php endif;?>

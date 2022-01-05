@@ -25,6 +25,7 @@ if (! empty($activeP21CustomerId)):
                     <?= $block->escapeHtml($activeP21CustomerName) ?>
                 </p>
                 <?php endif; ?>
+                <?= $block->getChildHtml() ?>
             </div>
         </div>
         <?php if (count($p21CustomerIds) > 1): ?>

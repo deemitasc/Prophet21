@@ -1,0 +1,28 @@
+<?php
+/** @var \Ripen\Prophet21\Helper\Product $p21Helper */
+$p21Helper = $this->helper('Ripen\Prophet21\Helper\Product');
+/** @var \Magento\Catalog\Block\Product\View $block */
+$product = $block->getProduct();
+
+$productUOM = $p21Helper->getAvailableProductUOM($product);
+$defaultUOM = $p21Helper->getProductDefaultUOM($product);
+
+if (count($productUOM) > 1):
+    $preconfiguredValues = $product->getPreconfiguredValues();
+    $selectedUOMValue = $preconfiguredValues[\Ripen\Prophet21\Model\CustomerUOM::UOM_FORM_FIELD_NAME] ?? $defaultUOM;
+?>
+<div class="fieldset">
+    <div class="field uom">
+        <label class="label" for="<?= \Ripen\Prophet21\Model\CustomerUOM::UOM_FORM_FIELD_NAME; ?>"><span><?= $block->escapeHtml(__('UOM')) ?></span></label>
+        <div class="control">
+            <select name="<?= \Ripen\Prophet21\Model\CustomerUOM::UOM_FORM_FIELD_NAME; ?>" class="select uom js-cart-uom">
+                <?php foreach($productUOM as $UOM):
+                    $selected = ($selectedUOMValue == $UOM['value_string']) ? ' selected="selected"' : '';
+                ?>
+                <option value="<?= $UOM['value_string']; ?>" data-unit="<?= $UOM['uom'] ;?>" data-unit-size="<?= $UOM['size']; ?>"<?= $selected ;?>><?= $UOM['uom']; ?></option>
+                <?php endforeach;?>
+            </select>
+        </div>
+    </div>
+</div>
+<?php endif;?>

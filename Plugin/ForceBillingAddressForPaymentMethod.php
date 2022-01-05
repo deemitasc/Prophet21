@@ -12,6 +12,8 @@ use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Checkout\Model\PaymentInformationManagement;
 use Magento\Quote\Api\Data\PaymentInterface;
 use Magento\Quote\Api\Data\AddressInterface;
+use Magento\Store\Model\StoreManagerInterface;  
+use Ripen\Prophet21\Helper\Customer as CustomerHelper;
 
 class ForceBillingAddressForPaymentMethod
 {
@@ -41,24 +43,40 @@ class ForceBillingAddressForPaymentMethod
     private $helper;
 
     /**
+     * @var StoreManagerInterface;  
+     */
+    protected $storeManager;
+
+    /**
+     * @var CustomerHelper;  
+     */
+    protected $customerHelper;
+
+    /**
+     * @param LoggerInterface $logger
      * @param Api $api
      * @param AddressInterfaceFactory $addressDataFactory
      * @param CartRepositoryInterface $cartRepoistory
-     * @param LoggerInterface $logger
+     * @param StoreManagerInterface $storeManager
      * @param DataHelper $helper 
+     * @param CustomerHelper $customerHelper 
      */
     public function __construct(
         LoggerInterface $logger,
         Api $api,
         AddressInterfaceFactory $addressDataFactory,
         CartRepositoryInterface $cartRepoistory,
-        DataHelper $helper 
+        StoreManagerInterface $storeManager,  
+        DataHelper $helper,
+        CustomerHelper $customerHelper
     ){
         $this->logger = $logger;
         $this->api = $api;
         $this->addressDataFactory = $addressDataFactory;
         $this->cartRepository = $cartRepoistory;
+        $this->storeManager = $storeManager;
         $this->helper = $helper;
+        $this->customerHelper = $customerHelper;
     }
 
     /**
@@ -78,7 +96,7 @@ class ForceBillingAddressForPaymentMethod
         AddressInterface $billingAddress = null
     ){
         // Get what methods we allow to force our p21 billing address for (EX: COD)
-        $methodsString = $this->helper->getP21BillToPaymentMethods();
+        $methodsString = $this->helper->getP21BillToPaymentMethods($this->storeManager->getStore()->getId());
         if(empty($methodsString)) {
             return [$cartId, $paymentMethod, $billingAddress];
         }
@@ -86,7 +104,12 @@ class ForceBillingAddressForPaymentMethod
         $quote = $this->cartRepository->getActive($cartId);
         $customer = $quote->getCustomer();
 
-        $billtos = $this->api->getCustomerBillTos($customer->getId());
+        $customerId = $this->customerHelper->getP21CustomerIdByMagentoCustomerId($customer->getId());
+        if(empty($customerId)) {
+            return [$cartId, $paymentMethod, $billingAddress];
+        }
+       
+        $billtos = $this->api->getCustomerBillTos($customerId);
         if(empty($billtos)) {
             return [$cartId, $paymentMethod, $billingAddress];
         }
